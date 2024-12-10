@@ -11,6 +11,8 @@ $ __./genkey.sh__ <br>
   You must edit the prj.conf and src/wireguard_vpn.h files for vpn settings.<br><br>
 
 ```
+$ cp -R ./wireguard-zephyr-wifi ~/ncs/nrf/samples/net/wireguard
+
 $ cd ~/ncs/
 $ nrfutil toolchain-manager launch --shell
 (v2.8.0) chyi@earth:~/ncs$ source zephyr/zephyr-env.sh
@@ -41,7 +43,7 @@ CONFIG_NET_CONFIG_VPN_IPV4_NETMASK="255.255.255.0"
 (v2.8.0) chyi@earth:~/ncs/zephyr $ west flash
 
 ```
-The code above was tested with nRF7002 DK board.<br>
+This project was tested with nRF7002 DK board.<br><br>
 ## My blog posting for this project
   For more information, please read the blog posting below.<br>
   https://slowbootkernelhacks.blogspot.com/2024/12/wireguard-for-zephyr-rtos.html <br><br>
