@@ -15,7 +15,7 @@ $ ./genkey.sh
 ```
 $ cp -R ./wireguard-zephyr-wifi ~/ncs/nrf/samples/net/wireguard
 
-$ vi subsys/net/ip/icmpv4.c
+$ vi ~/ncs/zephyr/subsys/net/ip/icmpv4.c
 -> See the patch/subsys/net/ip/icmpv4.c or icmpv4.c.patch file
 enum net_verdict net_icmpv4_input(struct net_pkt *pkt,
 				  struct net_ipv4_hdr *ip_hdr)
