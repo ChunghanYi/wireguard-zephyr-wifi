@@ -286,22 +286,22 @@ int init_tunnel(void)
 	net_if_foreach(iface_cb, &ud);
 
 	LOG_INF("Tunnel interface %d (%s / %p)",
-		net_if_get_by_iface(ud.my_iface),
-		net_virtual_get_name(ud.my_iface, buf, sizeof(buf)),
-		ud.my_iface);
+			net_if_get_by_iface(ud.my_iface),
+			net_virtual_get_name(ud.my_iface, buf, sizeof(buf)),
+			ud.my_iface);
 
 	/* Attach the network interfaces on top of the wifi interface(a.k.a wlan0) */
-    if (wg_netif && wg_netif->eth_if) {
+	if (wg_netif && wg_netif->eth_if) {
 		net_virtual_interface_attach(ud.my_iface, wg_netif->eth_if);
 	} else {
 		LOG_ERR("Cannot attach virtual interface to wifi interface.");
 	}
 
 	ret = setup_iface(ud.my_iface,
-			  NULL,
-			  CONFIG_NET_CONFIG_VPN_IPV4_ADDR,
-			  NULL, NULL,
-			  CONFIG_NET_CONFIG_VPN_IPV4_NETMASK);
+			NULL,
+			CONFIG_NET_CONFIG_VPN_IPV4_ADDR,
+			NULL, NULL,
+			CONFIG_NET_CONFIG_VPN_IPV4_NETMASK);
 	if (ret < 0) {
 		LOG_ERR("Cannot set IP address to virtual tunnel interface");
 	}
