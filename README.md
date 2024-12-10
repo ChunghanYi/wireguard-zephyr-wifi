@@ -20,17 +20,17 @@ $ vi ~/ncs/zephyr/subsys/net/ip/icmpv4.c
 enum net_verdict net_icmpv4_input(struct net_pkt *pkt,
 				  struct net_ipv4_hdr *ip_hdr)
 {
-	...
-		if (net_if_need_calc_rx_checksum(net_pkt_iface(pkt), NET_IF_CHECKSUM_IPV4_ICMP) ||
-	    net_pkt_is_ip_reassembled(pkt)) {
-		if (net_calc_chksum_icmpv4(pkt) != 0U) {
-			NET_DBG("DROP: Invalid checksum");
+    ...
+    if (net_if_need_calc_rx_checksum(net_pkt_iface(pkt), NET_IF_CHECKSUM_IPV4_ICMP) ||
+        net_pkt_is_ip_reassembled(pkt)) {
+        if (net_calc_chksum_icmpv4(pkt) != 0U) {
+            NET_DBG("DROP: Invalid checksum");
 #if 0 /* ORIG_CODE - blocked for wireguard porting */
-			goto drop;
+            goto drop;
 #endif
-		}
-	}
-	...
+        }
+    }
+    ...
 }
 
 $ cd ~/ncs/
