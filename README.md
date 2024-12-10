@@ -43,7 +43,7 @@ CONFIG_NET_CONFIG_VPN_IPV4_NETMASK="255.255.255.0"
 (v2.8.0) chyi@earth:~/ncs/zephyr $ west flash
 
 ```
-This project was tested with nRF7002 DK board.<br><br>
+This project was tested with [nRF7002 DK](https://www.nordicsemi.com/Products/Development-hardware/nRF7002-DK/GetStarted) board.<br><br>
 ## My blog posting for this project
   For more information, please read the blog posting below.<br>
   https://slowbootkernelhacks.blogspot.com/2024/12/wireguard-for-zephyr-rtos.html <br><br>
