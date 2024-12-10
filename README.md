@@ -1,10 +1,12 @@
 # wireguard-zephyr-wifi
 <span style="color:#d3d3d3">WireGuard for Zephyr RTOS in the Wi-Fi environment</span>
 ## Generate a wireguard static key(Curve25519 private/public keypair)
-$ cd scripts <br>
-$ __./genkey.sh__ <br>
--rw-rw-r-- 1 chyi chyi 45 11월 17 09:28 privatekey <br>
--rw-rw-r-- 1 chyi chyi 45 11월 17 09:28 publickey <br>
+```
+$ cd scripts
+$ ./genkey.sh
+-rw-rw-r-- 1 chyi chyi 45 11월 17 09:28 privatekey
+-rw-rw-r-- 1 chyi chyi 45 11월 17 09:28 publickey
+```
 ## How to build and run
   Caution: <br>
   You must first copy this folder under samples/net in the Nordic NRF Connect SDK. <br>
@@ -12,6 +14,24 @@ $ __./genkey.sh__ <br>
 
 ```
 $ cp -R ./wireguard-zephyr-wifi ~/ncs/nrf/samples/net/wireguard
+
+$ vi subsys/net/ip/icmpv4.c
+-> See the patch/subsys/net/ip/icmpv4.c or icmpv4.c.patch file
+enum net_verdict net_icmpv4_input(struct net_pkt *pkt,
+				  struct net_ipv4_hdr *ip_hdr)
+{
+	...
+		if (net_if_need_calc_rx_checksum(net_pkt_iface(pkt), NET_IF_CHECKSUM_IPV4_ICMP) ||
+	    net_pkt_is_ip_reassembled(pkt)) {
+		if (net_calc_chksum_icmpv4(pkt) != 0U) {
+			NET_DBG("DROP: Invalid checksum");
+#if 0 /* ORIG_CODE - blocked for wireguard porting */
+			goto drop;
+#endif
+		}
+	}
+	...
+}
 
 $ cd ~/ncs/
 $ nrfutil toolchain-manager launch --shell
