@@ -78,5 +78,5 @@ This project was tested with [nRF7002 DK](https://www.nordicsemi.com/Products/De
   zephyr/samples/net/sockets <br>
   zephyr/samples/net/virtual <br>
   <br>
-  (***) WireGuard is a registered trademark of Jason A. Donenfeld.
+  __WireGuard is a registered trademark of Jason A. Donenfeld.__
 
