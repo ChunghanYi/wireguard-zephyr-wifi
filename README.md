@@ -66,7 +66,8 @@ CONFIG_NET_CONFIG_VPN_IPV4_NETMASK="255.255.255.0"
 This project was tested with [nRF7002 DK](https://www.nordicsemi.com/Products/Development-hardware/nRF7002-DK/GetStarted) board.<br><br>
 ## My blog posting for this project
   For more information, please read the blog posting below.<br>
-  https://slowbootkernelhacks.blogspot.com/2024/12/wireguard-for-zephyr-rtos.html <br><br>
+  https://slowbootkernelhacks.blogspot.com/2024/12/wireguard-for-zephyr-rtos.html <br>
+  https://slowbootkernelhacks.blogspot.com/2024/12/wireguard-for-zephyr-rtos2.html <br><br>
   Caution: <br>
   <span style="color:red">You must first proceed with the patch by referring to the subsys/net/ip/icmpv4.c.patch file.</span> <br><br>
 ## Limitations
