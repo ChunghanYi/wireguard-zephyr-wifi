@@ -83,6 +83,8 @@ static void event_handler(struct net_mgmt_event_callback *cb,
 
 	if (wg_netif) {
 		wg_netif->eth_if = iface;
+	} else {
+		return;
 	}
 
 	if ((mgmt_event & EVENT_MASK) != mgmt_event) {
@@ -117,7 +119,7 @@ static void event_handler(struct net_mgmt_event_callback *cb,
 	}
 }
 
-static void init_app(void)
+static int init_app(void)
 {
 #if defined(CONFIG_USERSPACE)
 	struct k_mem_partition *parts[] = {
@@ -140,6 +142,7 @@ static void init_app(void)
 	wg_netif = (struct netif *)malloc(sizeof(struct netif));
 	if (wg_netif == NULL) {
 		LOG_ERR("Could not allocate struct netif");
+		return -1;
 	}
 
 	if (IS_ENABLED(CONFIG_NET_CONNECTION_MANAGER)) {
@@ -150,11 +153,22 @@ static void init_app(void)
 		conn_mgr_mon_resend_status();
 	}
 
-	init_wifi();
+	if (init_wifi() < 0) {
+		LOG_ERR("Wi-Fi initialization is failed.");
+		return -1;
+	}
 
-	wireguard_setup();
+	if (init_tunnel() < 0) {
+		LOG_ERR("Virtual interface initialization is failed.");
+		return -1;
+	}
 
-	init_tunnel();
+	if (wireguard_setup() < 0) {
+		LOG_ERR("wireguard setup is failed.");
+		return -1;
+	}
+
+	return 0;
 }
 
 static int cmd_quit(const struct shell *sh,
@@ -169,19 +183,20 @@ static int cmd_quit(const struct shell *sh,
 	return 0;
 }
 
-SHELL_STATIC_SUBCMD_SET_CREATE(sample_commands,
+SHELL_STATIC_SUBCMD_SET_CREATE(wg_commands,
 	SHELL_CMD(quit, NULL,
 		  "Quit the WG application\n",
 		  cmd_quit),
 	SHELL_SUBCMD_SET_END
 );
 
-SHELL_CMD_REGISTER(sample, &sample_commands,
+SHELL_CMD_REGISTER(wireguard, &wg_commands,
 		   "WG application commands", NULL);
 
 int main(void)
 {
-	init_app();
+	if (init_app() < 0)
+		goto out;
 
 	if (!IS_ENABLED(CONFIG_NET_CONNECTION_MANAGER)) {
 		/* If the config library has not been configured to start the
@@ -201,6 +216,9 @@ int main(void)
 	if (connected) {
 		stop_udp_service();
 	}
+
+out:
+	LOG_INF("Stopping wireguard...");
 
 	stop_wg_timer();
 	if (wg_netif)
