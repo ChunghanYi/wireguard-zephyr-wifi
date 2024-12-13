@@ -309,8 +309,9 @@ static void wireguardif_process_response_message(struct wireguard_device *device
 		wireguardif_send_keepalive(device, peer);
 
 #ifdef TBD_ZEPHYR_PORTING
-		// Set the IF-UP flag on netif
-		net_if_is_up(wg_netif->eth_if);
+		if (!net_if_is_up(wg_netif->eth_if)) {
+			net_if_up(wg_netif->eth_if);
+		}
 #endif
 
 	} else {
@@ -401,10 +402,10 @@ static void wireguardif_process_data_message(struct wireguard_device *device, st
 						peer->send_handshake = true;
 					}
 
-#ifdef TBD_ZEPHYR_PORTING
 					// Make sure that link is reported as up
-					net_if_is_up(wg_netif->tun_if);
-#endif
+					if (!net_if_is_up(wg_netif->tun_if)) {
+						net_if_up(wg_netif->tun_if);
+					}
 
 					if (tot_len > 0) {
 						//4a. Once the packet payload is decrypted, the interface has a plaintext packet. If this is not an IP packet, it is dropped.
@@ -995,8 +996,9 @@ void wireguardif_tmr(struct k_timer *timer) {
 
 	if (!link_up) {
 #ifdef TBD_ZEPHYR_PORTING
-		// Clear the IF-UP flag on netif
-		net_if_is_up(wg_netif->eth_if);
+		if (!net_if_is_up(wg_netif->eth_if)) {
+			net_if_up(wg_netif->eth_if);
+		}
 #endif
 	}
 }
