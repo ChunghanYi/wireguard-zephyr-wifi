@@ -278,7 +278,7 @@ int init_tunnel(void)
 #define MAX_NAME_LEN 32
 	char buf[MAX_NAME_LEN];
 	struct ud ud;
-	int ret;
+	int ret = 0;
 
 	LOG_INF("Start tunnel service (dev %s/%p)", dev_name, device_get_binding(dev_name));
 
@@ -286,22 +286,23 @@ int init_tunnel(void)
 	net_if_foreach(iface_cb, &ud);
 
 	LOG_INF("Tunnel interface %d (%s / %p)",
-			net_if_get_by_iface(ud.my_iface),
-			net_virtual_get_name(ud.my_iface, buf, sizeof(buf)),
-			ud.my_iface);
+		net_if_get_by_iface(ud.my_iface),
+		net_virtual_get_name(ud.my_iface, buf, sizeof(buf)),
+		ud.my_iface);
 
 	/* Attach the network interfaces on top of the wifi interface(a.k.a wlan0) */
-	if (wg_netif && wg_netif->eth_if) {
+    if (wg_netif && wg_netif->eth_if) {
 		net_virtual_interface_attach(ud.my_iface, wg_netif->eth_if);
 	} else {
 		LOG_ERR("Cannot attach virtual interface to wifi interface.");
+		ret = -1;
 	}
 
 	ret = setup_iface(ud.my_iface,
-			NULL,
-			CONFIG_NET_CONFIG_VPN_IPV4_ADDR,
-			NULL, NULL,
-			CONFIG_NET_CONFIG_VPN_IPV4_NETMASK);
+			  NULL,
+			  CONFIG_NET_CONFIG_VPN_IPV4_ADDR,
+			  NULL, NULL,
+			  CONFIG_NET_CONFIG_VPN_IPV4_NETMASK);
 	if (ret < 0) {
 		LOG_ERR("Cannot set IP address to virtual tunnel interface");
 	}
@@ -310,5 +311,10 @@ int init_tunnel(void)
 		wg_netif->tun_if = ud.my_iface;
 	}
 
-	return 0;
+	ret = net_if_up(ud.my_iface);
+	if (ret) {
+		LOG_ERR("Cannot take virtual interface up (%d)\n", ret);
+	}
+
+	return ret;
 }
