@@ -21,7 +21,7 @@ extern "C" {
 #define WG_PEER_PORT            51820
 #define WG_ENDPOINT_ADDRESS     IPADDR4_INIT_BYTES(192, 168, 8, 139)  //peer endpoint(real) ip address
 
-void wireguard_setup(void);
+int wireguard_setup(void);
 
 #ifdef __cplusplus
 }

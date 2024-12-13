@@ -49,7 +49,7 @@
 extern struct netif *wg_netif;
 static uint8_t wireguard_peer_index_local = WIREGUARDIF_INVALID_INDEX;
 
-void wireguard_setup(void) {
+int wireguard_setup(void) {
 	struct wireguardif_init_data wg;
 	struct wireguardif_peer peer;
 	const ip_addr_t peer_address = WG_ENDPOINT_ADDRESS;
@@ -61,6 +61,8 @@ void wireguard_setup(void) {
 	// Register the new WireGuard network interface
 	if (wg_netif) {
 		wg_netif->state = &wg;
+	} else {
+		return -1;
 	}
 
 	wireguardif_init(wg_netif);
@@ -85,4 +87,6 @@ void wireguard_setup(void) {
 		// Start outbound connection to peer
 		wireguardif_connect(wg_netif, wireguard_peer_index_local);
 	}
+
+	return 0;
 }
